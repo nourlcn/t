@@ -178,6 +178,7 @@ class TaskDict(object):
         for prefix in prefixs:
             task = self.tasks.pop(self[prefix]['id'])
             self.done[task['id']] = task
+            print task['text']
     
     def print_list(self, kind='tasks', verbose=False, quiet=False, grep=''):
         """Print out a nicely formatted list of unfinished tasks."""
