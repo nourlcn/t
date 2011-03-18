@@ -272,8 +272,15 @@ def _main():
             td.add_task(text)
             td.write(options.delete)
         else:
-            td.print_list(verbose=options.verbose, quiet=options.quiet,
-                          grep=options.grep)
+            if os.isatty(0):
+                td.print_list(verbose=options.verbose, quiet=options.quiet,
+                              grep=options.grep)
+            else:
+                for task in sys.__stdin__:
+                    if task:
+                        td.add_task(task)
+                td.write(options.delete)
+                print 'Tasks from stdin imported successfully.'
     except AmbiguousPrefix, e:
         sys.stderr.write('The ID "%s" matches more than one task.' % e.prefix)
     except UnknownPrefix, e:
