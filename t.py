@@ -167,7 +167,7 @@ class TaskDict(object):
         
         task['text'] = text
     
-    def finish_task(self, prefix):
+    def finish_task(self, prefixs):
         """Mark the task with the given prefix as finished.
         
         If more than one task matches the prefix an AmbiguousPrefix exception
@@ -175,8 +175,9 @@ class TaskDict(object):
         be raised.
         
         """
-        task = self.tasks.pop(self[prefix]['id'])
-        self.done[task['id']] = task
+        for prefix in prefixs:
+            task = self.tasks.pop(self[prefix]['id'])
+            self.done[task['id']] = task
     
     def print_list(self, kind='tasks', verbose=False, quiet=False, grep=''):
         """Print out a nicely formatted list of unfinished tasks."""
@@ -219,7 +220,13 @@ def _build_parser():
         "If no actions are specified the TEXT will be added as a new task.")
     actions.add_option("-e", "--edit", dest="edit", default="",
                        help="edit TASK to contain TEXT", metavar="TASK")
+    def finished_tasks(option, opt_str, value, parser):
+        value = []
+        value.extend(parser.rargs)
+        del parser.rargs[:]
+        setattr(parser.values, option.dest, value)
     actions.add_option("-f", "--finish", dest="finish",
+                       action="callback", callback=finished_tasks,
                        help="mark TASK as finished", metavar="TASK")
     parser.add_option_group(actions)
     
