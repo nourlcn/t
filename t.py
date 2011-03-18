@@ -277,6 +277,7 @@ def _main():
                               grep=options.grep)
             else:
                 for task in sys.__stdin__:
+                    task = task.strip()
                     if task:
                         td.add_task(task)
                 td.write(options.delete)
